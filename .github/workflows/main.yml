@@ -29,7 +29,6 @@ jobs:
 
       - name: Opublikuj aplikacje
         run: |
-          echo "Ścieżka: $GOOGLE_APPLICATION_CREDENTIALS"
-          test -f "$GOOGLE_APPLICATION_CREDENTIALS"
+          gcloud auth application-default print-access-token > /dev/null
           firebase deploy --only hosting --project mafiango-ad466 --non-interactive 
           
