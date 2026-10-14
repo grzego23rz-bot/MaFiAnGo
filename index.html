@@ -1,4 +1,4 @@
-<!doctype html>
+:<!doctype html>
 <html lang="pl"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#6658eb"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,6 +21,29 @@ async function zaloguj(email, haslo) {
     return false;
   }
   return true;
+}
+</script>
+ <div id="ekran-logowania" style="padding:20px;text-align:center">
+  <h2>🔐 Logowanie MaFiAnGo</h2>
+  <select id="konto">
+    <option value="grzego23rz@gmail.com">Tata</option>
+    <option value="marcellech17@gmail.com">Marcel</option>
+    <option value="filipmalpka511@gmail.com">Filip</option>
+    <option value="antekhuczko@gmail.com">Antek</option>
+  </select>
+  <p><input id="haslo" type="password" placeholder="Hasło"></p>
+  <button onclick="wejdz()">Zaloguj</button>
+</div>
+
+<script>
+async function wejdz() {
+  const email = document.getElementById('konto').value;
+  const haslo = document.getElementById('haslo').value;
+
+  if (await zaloguj(email, haslo)) {
+    document.getElementById('ekran-logowania').style.display = 'none';
+    alert('Zalogowano pomyślnie!');
+  }
 }
 </script>
 <style>
