@@ -18,7 +18,9 @@ jobs:
 
       - name: Zaloguj do Google Cloud
         uses: google-github-actions/auth@v2
-        with:
+        with:    
+          create_credentials_file: true                              
+
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
