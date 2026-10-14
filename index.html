@@ -10,6 +10,19 @@
   const SUPABASE_KEY = "sb_publishable_zU7T-Y1klhyUpaRywWhLGg__uc_x1NG";
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 </script>
+ <script>
+async function zaloguj(email, haslo) {
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: haslo
+  });
+  if (error) {
+    alert("Błąd logowania: " + error.message);
+    return false;
+  }
+  return true;
+}
+</script>
 <style>
 :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#262642;background:#f6f5fc;font-synthesis:none}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(180deg,#f1efff 0,#f8f8ff 280px,#f6f5fc 100%)}button,input,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f3aaec;outline-offset:2px}
