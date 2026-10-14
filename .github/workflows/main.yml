@@ -20,7 +20,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:    
           create_credentials_file: true                              
-
+          export_environment_variables: true
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
