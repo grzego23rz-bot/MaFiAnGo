@@ -738,6 +738,41 @@ function renderCalendar(){
   };
  }
 }
+// 16.10r: panel powiadomień wewnątrz aplikacji dla Taty.
+// Nie wymaga nowych tabel ani uprawnień.
+let dadInboxOpen=false;
+function renderDadInbox(){
+ const host=el('dadInboxHost');if(!host)return;
+ if(current!=='tata'||!familyId){host.hidden=true;host.innerHTML='';dadInboxOpen=false;return}
+ const pending=checks.filter(ch=>ch.status==='pending').map(ch=>({ch,e:entries.find(e=>e.id===ch.entry_id)})).filter(x=>x.e);
+ host.hidden=false;
+ host.innerHTML='<button type="button" id="dadInboxToggle" class="dad-inbox-toggle" aria-expanded="'+dadInboxOpen+'">'+
+  (pending.length?'🔴 Do zatwierdzenia: '+pending.length:'🔔 Zgłoszenia dzieci: 0')+'</button>'+
+  (dadInboxOpen?'<section class="dad-inbox-panel"><h3>📥 Zgłoszenia dzieci</h3>'+
+   (pending.length?pending.map(({ch,e})=>'<div class="dad-inbox-item"><div><strong>'+esc(cNames[e.member_key]||e.member_key)+' zgłasza wykonanie</strong><div>'+esc(e.title)+'</div><small>Termin: '+esc(ch.occurrence_date)+'</small></div><button type="button" class="primary" data-inbox-approve="'+esc(ch.id)+'">✓ Zatwierdź</button></div>').join(''):'<p class="muted">Nie ma zadań oczekujących na zatwierdzenie.</p>')+
+   '<p class="muted small">Lista aktualizuje się automatycznie, gdy dziecko zgłosi wykonanie zadania.</p></section>':'');
+ const toggle=el('dadInboxToggle');
+ toggle.onclick=()=>{dadInboxOpen=!dadInboxOpen;renderDadInbox()};
+ host.querySelectorAll('[data-inbox-approve]').forEach(btn=>btn.onclick=async()=>{
+  btn.disabled=true;
+  await approveCheck(btn.dataset.inboxApprove);
+  renderDadInbox();
+ });
+}
+(function setupDadInbox(){
+ const css=document.createElement('style');css.textContent=`
+ #dadInboxHost[hidden]{display:none!important}
+ #dadInboxHost{margin-top:12px}
+ .dad-inbox-toggle{width:100%;padding:14px 16px;border:0;border-radius:15px;background:#c6283f;color:white;font-size:16px;font-weight:800;box-shadow:0 6px 15px #c6283f35;text-align:left}
+ .dad-inbox-panel{margin-top:8px;padding:15px;border-radius:16px;background:white;border:2px solid #ffd0d7;box-shadow:0 5px 16px #35204a13}
+ .dad-inbox-panel h3{margin:0 0 10px;color:#92223a}
+ .dad-inbox-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-top:1px solid #f1e5ed}
+ .dad-inbox-item div{overflow-wrap:anywhere}.dad-inbox-item small{display:block;color:#77758b;margin-top:5px}
+ .dad-inbox-item button{flex-shrink:0;font-size:13px;padding:10px}
+ `;document.head.appendChild(css);
+ const host=document.createElement('div');host.id='dadInboxHost';host.hidden=true;
+ const app=el('app');app.insertBefore(host,app.firstChild);
+})();
 async function refreshCalendar(silent=false){
  if(!familyId||!current||cLoading)return;
  cLoading=true;
@@ -750,6 +785,7 @@ async function refreshCalendar(silent=false){
   entries=a.data||[];checks=b.data||[];cError='';
  }catch(e){cError=err(e)}
  finally{cLoading=false}
+ renderDadInbox();
  if(tab==='kalendarz'&&!silent)renderCalendar();
 }
 async function cWrite(query){
