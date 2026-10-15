@@ -44,7 +44,7 @@ button:active{transform:scale(.98)}
 footer{padding-top:7px;color:#8a83a6}
 @media(max-width:380px){.wrap{padding-left:11px;padding-right:11px}.panel{padding:15px}.hero{padding:22px 18px 27px}.item{padding:11px 9px}.item button{padding:9px 8px;font-size:12px}#content form.row{flex-wrap:wrap}#content form.row .primary{width:100%}}
 
-/* MaFiAnGo 16.10j — sprawy rodziny */
+/* MaFiAnGo 16.10l — sprawy rodziny */
 .tabs button[hidden]{display:none!important}
 :root{--purple:#7456ed;--ink:#25294d}
 .wrap{max-width:840px;padding:12px 14px 110px}
@@ -94,7 +94,7 @@ footer{padding-top:7px;color:#8a83a6}
 /* MaFiAnGo 16.10i — przygotowanie powiadomień */
 .push-setup{margin-top:12px;padding:12px 15px;background:#fff;border:1px solid #e9e5fc;border-radius:18px;text-align:center}
 .push-setup #enablePush{width:100%}.push-setup #pushInfo{margin:8px 0 0;font-size:12px}
-</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section id="pushSetup" class="push-setup"><button id="enablePush" class="secondary" type="button">🔔 Włącz powiadomienia</button><p id="pushInfo" class="muted" role="status">Powiadomienia są na razie przygotowywane.</p></section><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10j</footer></div><script>
+</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section id="pushSetup" class="push-setup"><button id="enablePush" class="secondary" type="button">🔔 Włącz powiadomienia</button><p id="pushInfo" class="muted" role="status">Powiadomienia są na razie przygotowywane.</p></section><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10l</footer></div><script>
 'use strict';
 const URL='https://wphgyimjbnlnzhwpakmw.supabase.co';
 const KEY='sb_publishable_zU7T-Y1klhyUpaRywWhLGg__uc_x1NG';
@@ -176,7 +176,7 @@ async function login(){el('loginError').textContent='';if(!client){el('loginErro
 async function start(user){current=Object.keys(accounts).find(k=>accounts[k].email.toLowerCase()===String(user.email).toLowerCase());if(!current){await client.auth.signOut();throw Error('To konto nie należy do skonfigurowanych profili MaFiAnGo.')}el('login').classList.add('hide');el('app').classList.remove('hide');el('hello').textContent='Cześć, '+(current==='tata'?'Grzegorz':accounts[current].name)+'! 👋';el('who').textContent=current==='tata'?'Panel rodzica':'Panel domownika';el('accountName').textContent='Zalogowano: '+accounts[current].name;await load()}
 async function load(){status('Pobieranie danych…');try{const {data:userData,error:userError}=await client.auth.getUser();if(userError)throw userError;const uid=userData.user?.id;if(!uid)throw Error('Sesja wygasła. Zaloguj się ponownie.');let r=await client.from('family_members').select('id,family_id,name,user_id,role').eq('user_id',uid).limit(1);if(r.error)throw r.error;familyId=r.data?.[0]?.family_id;if(!familyId){const own=await client.from('families').select('id').eq('owner_id',uid).limit(1);if(own.error)throw own.error;familyId=own.data?.[0]?.id}if(!familyId)throw Error('Nie znaleziono rodziny powiązanej z tym kontem. W Supabase trzeba powiązać użytkownika z rodziną.');const [m,s,t]=await Promise.all([client.from('family_members').select('id,family_id,name,user_id,role').eq('family_id',familyId),client.from('shopping_items').select('id,text,done,created_by,created_at').eq('family_id',familyId).order('created_at',{ascending:false}),client.from('tasks').select('id,text,done,assigned_to,created_at').eq('family_id',familyId).order('created_at',{ascending:false})]);for(const r of [m,s,t])if(r.error)throw r.error;members=m.data||[];shopping=s.data||[];tasks=t.data||[];status('✓ Połączono z Supabase • '+new Date().toLocaleTimeString('pl-PL'));render()}catch(e){status('Błąd synchronizacji: '+err(e),true);render()}}
 async function mutation(query){if(busy)return;busy=true;status('Zapisywanie…');try{const {error}=await query;if(error)throw error;await load()}catch(e){status('Nie zapisano zmiany: '+err(e),true)}finally{busy=false}}
-function render(){document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));const isDad=current==='tata';if(!familyId){el('content').innerHTML='<h2>Połączenie z rodziną</h2><p class="muted">Najpierw trzeba poprawnie powiązać konto z rodziną w Supabase.</p>';return}if(tab==='zakupy'){el('content').innerHTML='<h2>🛒 Lista zakupów</h2><form id="addShopping" class="row"><input id="newShopping" maxlength="120" required placeholder="Co trzeba kupić?"><button class="primary">Dodaj</button></form><div id="items">'+(shopping.map(x=>'<div class="item"><span class="label">'+esc(x.text)+'</span><button class="secondary" data-buy="'+esc(x.id)+'">✓ Kupione</button></div>').join('')||'<p class="muted">Lista jest pusta.</p>')+'</div>';el('addShopping').onsubmit=e=>{e.preventDefault();const text=el('newShopping').value.trim();if(text){(async()=>{try{const {data,error}=await client.auth.getUser();if(error)throw error;const uid=data?.user?.id;if(!uid)throw Error('Sesja wygasła. Zaloguj się ponownie.');await mutation(client.from('shopping_items').insert({family_id:familyId,text,done:false,created_by:uid}))}catch(e){status('Nie zapisano zmiany: '+err(e),true)}})()}};document.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>mutation(client.from('shopping_items').delete().eq('id',b.dataset.buy).eq('family_id',familyId)));return}const visible=isDad?tasks:tasks.filter(x=>x.assigned_to===memberId(current));const options=members.filter(m=>m.name&&String(m.name).toLowerCase()!=='tata'&&m.id).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+'</option>').join('');el('content').innerHTML='<h2>✅ Zadania domowe</h2>'+(isDad?'<form id="addTask"><input id="newTask" maxlength="120" required placeholder="Jakie zadanie?"><select id="assigned">'+options+'</select><button class="primary" '+(!options?'disabled':'')+'>Dodaj zadanie</button></form>':'<p class="muted">Zadania przydziela i zatwierdza Tata.</p>')+(visible.map(x=>'<div class="item"><span class="label" style="'+(x.done?'text-decoration:line-through;opacity:.6':'')+'">'+esc(x.text)+'<div class="muted">'+esc(nameOf(x.assigned_to))+'</div></span>'+(isDad?'<button class="secondary" data-done="'+esc(x.id)+'" data-state="'+(x.done?'1':'0')+'">'+(x.done?'↩':'✓')+'</button><button class="secondary" data-del="'+esc(x.id)+'">×</button>':'')+'</div>').join('')||'<p class="muted">Brak zadań.</p>');if(isDad){el('addTask').onsubmit=e=>{e.preventDefault();const text=el('newTask').value.trim(),assigned_to=el('assigned').value;if(text&&assigned_to)mutation(client.from('tasks').insert({family_id:familyId,text,assigned_to,done:false}))};document.querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>mutation(client.from('tasks').update({done:b.dataset.state!=='1'}).eq('id',b.dataset.done).eq('family_id',familyId)));document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>mutation(client.from('tasks').delete().eq('id',b.dataset.del).eq('family_id',familyId)))}}
+function render(){document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));const isDad=current==='tata';if(!familyId){el('content').innerHTML='<h2>Połączenie z rodziną</h2><p class="muted">Najpierw trzeba poprawnie powiązać konto z rodziną w Supabase.</p>';return}if(tab==='zakupy'){el('content').innerHTML='<h2>🛒 Lista zakupów</h2><form id="addShopping" class="row"><input id="newShopping" maxlength="120" required placeholder="Co trzeba kupić?"><button class="primary">Dodaj</button></form><div id="items">'+(shopping.map(x=>'<div class="item"><span class="label">'+esc(x.text)+'</span><button class="secondary" data-buy="'+esc(x.id)+'">✓ Kupione</button></div>').join('')||'<p class="muted">Lista jest pusta.</p>')+'</div>';el('addShopping').onsubmit=e=>{e.preventDefault();const text=el('newShopping').value.trim();if(text){(async()=>{try{const {data,error}=await client.auth.getUser();if(error)throw error;const uid=data?.user?.id;if(!uid)throw Error('Sesja wygasła. Zaloguj się ponownie.');await mutation(client.from('shopping_items').insert({family_id:familyId,text,done:false,created_by:uid}))}catch(e){status('Nie zapisano zmiany: '+err(e),true)}})()}};document.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>mutation(client.from('shopping_items').delete().eq('id',b.dataset.buy).eq('family_id',familyId)));return}const visible=isDad?tasks:tasks.filter(x=>x.assigned_to===memberId(current));const options=members.filter(m=>m.name&&String(m.name).toLowerCase()!=='tata'&&m.id).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+'</option>').join('');el('content').innerHTML='<h2>✅ Zadania domowe</h2>'+(isDad?'<form id="addTask"><input id="newTask" maxlength="120" required placeholder="Jakie zadanie?"><select id="assigned">'+options+'</select><button class="primary" '+(!options?'disabled':'')+'>Dodaj zadanie</button></form>':'<p class="muted">Zadania przydziela i zatwierdza Tata.</p>')+(visible.map(x=>'<div class="item"><span class="label" style="'+(x.done?'text-decoration:line-through;opacity:.6':'')+'">'+esc(x.text)+'<div class="muted">'+esc(nameOf(x.assigned_to))+'</div></span>'+(isDad?'<button class="secondary" data-done="'+esc(x.id)+'" data-state="'+(x.done?'1':'0')+'">'+(x.done?'↩':'✓')+'</button><button class="secondary" data-del="'+esc(x.id)+'">×</button>':'')+'</div>').join('')||'<p class="muted">Brak zadań.</p>');if(isDad){el('addTask').onsubmit=e=>{e.preventDefault();const text=el('newTask').value.trim(),assigned_to=el('assigned').value;if(text&&assigned_to)createTaskAndNotify(text,assigned_to)};document.querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>mutation(client.from('tasks').update({done:b.dataset.state!=='1'}).eq('id',b.dataset.done).eq('family_id',familyId)));document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>mutation(client.from('tasks').delete().eq('id',b.dataset.del).eq('family_id',familyId)))}}
 el('loginBtn').onclick=login;el('loginBtn').setAttribute('data-ready','tak');el('password').addEventListener('keydown',e=>{if(e.key==='Enter')login()});el('refresh').onclick=load;el('logout').onclick=async()=>{await client.auth.signOut();current=null;familyId=null;members=[];shopping=[];tasks=[];el('app').classList.add('hide');el('login').classList.remove('hide');el('hello').textContent='Rodzinna ekipa 👋';el('who').textContent='Wspólne zakupy i zadania'};document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render()});if(client){client.auth.getUser().then(({data})=>{if(data.user)start(data.user).catch(e=>{el('loginError').textContent=err(e);el('app').classList.add('hide');el('login').classList.remove('hide')})}).catch(e=>{el('loginError').textContent='Błąd połączenia: '+err(e)});}else{el('loginError').textContent='Nie udało się załadować Supabase. Logowanie jest chwilowo niedostępne.';}
 </script><script>
 
@@ -283,6 +283,47 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current&&
 
 </script><script>
 
+/* MaFiAnGo 16.10l — automatyczne powiadomienie po utworzeniu zadania. */
+async function createTaskAndNotify(text,assigned_to){
+  if(busy)return;
+  busy=true;
+  status('Zapisywanie zadania…');
+  try{
+    if(current!=='tata'||!familyId)throw Error('Brak uprawnień do dodawania zadania.');
+    const token=await accessToken();
+    if(!token)throw Error('Sesja wygasła. Zaloguj się ponownie.');
+    // return=representation daje dokładne ID nowego zadania; bez zgadywania po tekście.
+    const created=await request('/rest/v1/tasks?select=id','POST',{
+      family_id:familyId,text,assigned_to,done:false
+    },token,{'Prefer':'return=representation'});
+    const taskId=created?.[0]?.id;
+    if(!taskId)throw Error('Zadanie zapisano, ale nie udało się odczytać jego ID.');
+    await load();
+    // Powiadomienie nie może cofnąć zapisanego zadania.
+    try{
+      const response=await fetch(URL+'/functions/v1/send-push',{
+        method:'POST',
+        headers:{'apikey':KEY,'Authorization':'Bearer '+await accessToken(),'Content-Type':'application/json'},
+        body:JSON.stringify({type:"task_assigned",taskId})
+      });
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok)throw Error(result.error||result.message||'HTTP '+response.status);
+      if(!result.success)throw Error('Brak potwierdzenia wysyłki.');
+      const count=Number(result.sent)||0;
+      if(count===0){
+        alert('✅ Zadanie dodane. Powiadomienia nie wysłano — odbiorca musi włączyć powiadomienia na swoim telefonie.');
+      }else{
+        alert('✅ Zadanie dodane i automatycznie wysłano powiadomienie! Urządzenia: '+count);
+      }
+    }catch(pushError){
+      alert('✅ Zadanie zostało zapisane, ale powiadomienie nie dotarło: '+err(pushError)+'\nMożesz spróbować ponownie przyciskiem 🔔.');
+    }
+  }catch(e){
+    status('Błąd dodawania zadania: '+err(e),true);
+    alert('Nie udało się dodać zadania: '+err(e));
+  }finally{busy=false}
+}
+
 /* MaFiAnGo 16.10j — ręczne wysłanie powiadomienia o zadaniu.
    Funkcja serwerowa sama weryfikuje zalogowanego Tatę i rodzinę zadania. */
 (function(){
@@ -303,7 +344,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current&&
       const response=await fetch(URL+'/functions/v1/send-push',{
         method:'POST',
         headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-        body:JSON.stringify({taskId:task.id})
+        body:JSON.stringify({type:"task_assigned",taskId:task.id})
       });
       const data=await response.json().catch(()=>({}));
       if(!response.ok)throw Error(data.error||data.message||'Błąd HTTP '+response.status);
@@ -341,6 +382,84 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current&&
     });
   };
 })();
+
+/* MaFiAnGo 16.10l — powiadomienia o zakupach i wykonaniu zadania. */
+async function notifyFamily(type,id){
+  const token=await accessToken();
+  if(!token)throw Error('Sesja wygasła. Zaloguj się ponownie.');
+  const body=type==='shopping_added'?{type,shoppingId:id}:{type,taskId:id};
+  const response=await fetch(URL+'/functions/v1/send-push',{
+    method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok||!data.success)throw Error(data.error||data.message||'HTTP '+response.status);
+  return data;
+}
+async function addShoppingAndNotify(text){
+  if(busy)return;
+  busy=true;
+  try{
+    const token=await accessToken();
+    if(!token)throw Error('Zaloguj się ponownie.');
+    const {data:userData,error:userError}=await client.auth.getUser();
+    if(userError)throw userError;
+    const uid=userData?.user?.id;
+    if(!uid)throw Error('Nie znaleziono użytkownika.');
+    const created=await request('/rest/v1/shopping_items?select=id','POST',{
+      family_id:familyId,text,done:false,created_by:uid
+    },token,{'Prefer':'return=representation'});
+    const id=created?.[0]?.id;
+    await load();
+    if(!id){alert('Produkt zapisano, ale nie udało się wysłać powiadomienia.');return}
+    if(current!=='tata'){
+      try{
+        const result=await notifyFamily('shopping_added',String(id));
+        if(!result.sent)alert('Produkt dodano, ale powiadomienie nie zostało wysłane. Sprawdź połączenie telefonu Taty.');
+      }catch(e){alert('Produkt dodano, ale powiadomienie do Taty nie zostało wysłane: '+err(e))}
+    }
+  }catch(e){status('Nie dodano produktu: '+err(e),true);alert('Nie dodano produktu: '+err(e))}
+  finally{busy=false}
+}
+async function finishChildTask(task){
+  if(busy)return;
+  if(current==='tata'||task.assigned_to!==memberId(current))return;
+  busy=true;
+  try{
+    if(task.done)return;
+    const {error}=await client.from('tasks').update({done:true}).eq('id',task.id).eq('family_id',familyId);
+    if(error)throw error;
+    // Potwierdzamy stan w bazie przed wysyłką, także przy RLS bez prawa zapisu.
+    const result=await client.from('tasks').select('id,done').eq('id',task.id).eq('family_id',familyId).limit(1);
+    if(result.error)throw result.error;
+    if(result.data?.[0]?.done!==true)throw Error('Nie udało się oznaczyć zadania. Sprawdź uprawnienia w Supabase.');
+    await load();
+    try{
+      const push=await notifyFamily('task_completed',String(task.id));
+      if(!push.sent)alert('Zadanie ukończone, ale Tata nie ma aktywnego odbiornika powiadomień.');
+    }catch(e){alert('Zadanie ukończone, ale powiadomienie do Taty nie zostało wysłane: '+err(e))}
+  }catch(e){status('Nie zapisano wykonania: '+err(e),true);alert('Nie udało się oznaczyć zadania: '+err(e))}
+  finally{busy=false}
+}
+const renderBeforeFamilyNotifications=render;
+render=function(){
+  renderBeforeFamilyNotifications();
+  if(!familyId)return;
+  if(tab==='zakupy'){
+    const form=el('addShopping');
+    if(form)form.onsubmit=e=>{e.preventDefault();const text=el('newShopping').value.trim();if(text)addShoppingAndNotify(text)};
+  }
+  if(tab==='zadania'&&current!=='tata'){
+    const visible=tasks.filter(x=>x.assigned_to===memberId(current));
+    document.querySelectorAll('#content .item').forEach((row,i)=>{
+      const task=visible[i];if(!task)return;
+      const button=Array.from(row.querySelectorAll('button')).find(b=>b.textContent.includes('Zrobione')||b.textContent.includes('Wykonane'));
+      if(!button)return;
+      if(task.done){button.textContent='☑ Wykonane';button.disabled=true}
+      else{button.textContent='✅ Zrobione';button.onclick=()=>finishChildTask(task)}
+    });
+  }
+};
 
 /* MaFiAnGo 16.10i — subskrypcja Web Push na urządzeniu.
    Wymaga endpointu GET send-push zwracającego {publicKey:...}.
