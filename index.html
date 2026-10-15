@@ -44,7 +44,7 @@ button:active{transform:scale(.98)}
 footer{padding-top:7px;color:#8a83a6}
 @media(max-width:380px){.wrap{padding-left:11px;padding-right:11px}.panel{padding:15px}.hero{padding:22px 18px 27px}.item{padding:11px 9px}.item button{padding:9px 8px;font-size:12px}#content form.row{flex-wrap:wrap}#content form.row .primary{width:100%}}
 
-/* MaFiAnGo 16.10g — sprawy rodziny */
+/* MaFiAnGo 16.10h — sprawy rodziny */
 .tabs button[hidden]{display:none!important}
 :root{--purple:#7456ed;--ink:#25294d}
 .wrap{max-width:840px;padding:12px 14px 110px}
@@ -91,7 +91,10 @@ footer{padding-top:7px;color:#8a83a6}
 #content .form-local button{width:100%;margin-top:8px}
 .item .smallbtn{padding:8px 10px}
 @media(min-width:600px){.tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.hero-avatar{width:92px;height:92px}#familyAvatars{max-width:600px;margin:18px auto 8px}}
-</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10g</footer></div><script>
+/* MaFiAnGo 16.10h — przygotowanie powiadomień */
+.push-setup{margin-top:12px;padding:12px 15px;background:#fff;border:1px solid #e9e5fc;border-radius:18px;text-align:center}
+.push-setup #enablePush{width:100%}.push-setup #pushInfo{margin:8px 0 0;font-size:12px}
+</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section id="pushSetup" class="push-setup"><button id="enablePush" class="secondary" type="button">🔔 Włącz powiadomienia</button><p id="pushInfo" class="muted" role="status">Powiadomienia są na razie przygotowywane.</p></section><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10h</footer></div><script>
 'use strict';
 const URL='https://wphgyimjbnlnzhwpakmw.supabase.co';
 const KEY='sb_publishable_zU7T-Y1klhyUpaRywWhLGg__uc_x1NG';
@@ -228,7 +231,7 @@ render=function(){
 // Podmieniamy wyłącznie funkcję rysującą; wywołania render() użyją nowej wersji.
 
 
-// 16.10g: sprawy rodzinne przechowywane w Supabase; stary lokalny budżet bez zmian.
+// 16.10h: sprawy rodzinne przechowywane w Supabase; stary lokalny budżet bez zmian.
 let familyMatters=[],matterSyncError='';
 const previousLoad=load;
 load=async function(){
@@ -278,4 +281,65 @@ render=function(){renderBeforeTaskUpdate();if(tab!=='zadania'||current==='tata'|
 // Sprawdzanie aktualizacji po powrocie do aplikacji (nie zastępuje powiadomień push).
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current&&familyId&&!busy)load()});
 
+</script><script>
+/* MaFiAnGo 16.10h — rejestracja service workera i zgoda użytkownika.
+   Subskrypcje Web Push i wysyłanie z serwera dodamy w kolejnym etapie. */
+(function(){
+  'use strict';
+  const button=document.getElementById('enablePush');
+  const info=document.getElementById('pushInfo');
+  const supported=('serviceWorker' in navigator)&&('Notification' in window)&&window.isSecureContext;
+  function setInfo(message){info.textContent=message;}
+  if(!supported){
+    button.disabled=true;
+    setInfo('Ta przeglądarka nie obsługuje wymaganych powiadomień.');
+    return;
+  }
+  let workerPromise=null;
+  function registerWorker(){
+    if(!workerPromise){
+      workerPromise=navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(e=>{
+        workerPromise=null;
+        throw e;
+      });
+    }
+    return workerPromise;
+  }
+  registerWorker().catch(e=>setInfo('Nie udało się podłączyć sw.js: '+e.message));
+  function updateState(){
+    if(Notification.permission==='granted'){
+      button.textContent='🔔 Powiadomienia dozwolone';
+      button.disabled=true;
+      setInfo('Zgoda jest włączona. Wysyłanie powiadomień uruchomimy w kolejnym etapie.');
+    }else if(Notification.permission==='denied'){
+      button.textContent='🔕 Powiadomienia zablokowane';
+      button.disabled=true;
+      setInfo('Odblokuj powiadomienia dla MaFiAnGo w ustawieniach telefonu lub przeglądarki.');
+    }else{
+      button.textContent='🔔 Włącz powiadomienia';
+      button.disabled=false;
+      setInfo('Kliknij, aby zezwolić na powiadomienia w tym telefonie.');
+    }
+  }
+  updateState();
+  button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+      await registerWorker();
+      const permission=await Notification.requestPermission();
+      updateState();
+      if(permission==='granted'){
+        const registration=await navigator.serviceWorker.ready;
+        await registration.showNotification('MaFiAnGo 🔔',{
+          body:'Powiadomienia są włączone na tym telefonie!',
+          icon:'./ikona-192.png',
+          data:{url:'./index.html'}
+        });
+      }
+    }catch(e){
+      setInfo('Nie udało się włączyć powiadomień: '+e.message);
+      button.disabled=false;
+    }
+  });
+})();
 </script></body></html>
