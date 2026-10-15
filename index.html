@@ -638,7 +638,7 @@ function calendarCSS(){return `<style>
 function cSelectOptions(){return Object.keys(cNames).map(k=>'<option value="'+k+'">'+esc(cNames[k])+'</option>').join('')+'<option value="all">Cała rodzina</option>'}
 function visibleChecks(){return checks.filter(x=>x.status==='pending')}
 function dayEvents(d){const arr=entriesFor(d);const bg=dateColor(arr);return {arr,bg}}
-// 16.10p: zachowuj niedokończony formularz przy odświeżaniu kalendarza.
+// 16.10q: zachowuj niedokończony formularz przy odświeżaniu kalendarza.
 let calendarDraft=null;
 function saveCalendarDraft(){
  const f=el('calAdd');if(!f)return;
@@ -727,12 +727,14 @@ function renderCalendar(){
   rule.onchange=()=>{week.style.display=rule.value==='weekly'?'block':'none'};
   f.onsubmit=async ev=>{
    ev.preventDefault();
-   const title=f.elements.title.value.trim(),start=f.elements.start.value,repeat_rule=rule.value;
+   const title=f.elements.namedItem('title').value.trim(),start=f.elements.namedItem('start').value,repeat_rule=rule.value;
    const weekdays=[...f.querySelectorAll('[name="weekday"]:checked')].map(x=>Number(x.value));
    if(repeat_rule==='weekly'&&!weekdays.length){alert('Zaznacz przynajmniej jeden dzień tygodnia.');return}
-   if(f.elements.end.value&&f.elements.end.value<start){alert('Data końca nie może być wcześniejsza niż początek.');return}
-   const result=await cWrite(client.from('calendar_entries').insert({family_id:familyId,title,kind:f.elements.kind.value,member_key:f.elements.person.value,start_date:start,event_time:f.elements.time.value||null,repeat_rule,weekdays:repeat_rule==='weekly'?weekdays:[],end_date:f.elements.end.value||null}));
-   if(result){calendarDraft=null;renderCalendar()}
+   if(f.elements.namedItem('end').value&&f.elements.namedItem('end').value<start){alert('Data końca nie może być wcześniejsza niż początek.');return}
+   try{
+    const result=await cWrite(client.from('calendar_entries').insert({family_id:familyId,title,kind:f.elements.namedItem('kind').value,member_key:f.elements.namedItem('person').value,start_date:start,event_time:f.elements.namedItem('time').value||null,repeat_rule,weekdays:repeat_rule==='weekly'?weekdays:[],end_date:f.elements.namedItem('end').value||null}));
+    if(result){calendarDraft=null;renderCalendar();alert('Zapisano w kalendarzu!')}
+   }catch(ex){alert('Nie udało się zapisać: '+err(ex))}
   };
  }
 }
@@ -751,7 +753,7 @@ async function refreshCalendar(silent=false){
  if(tab==='kalendarz'&&!silent)renderCalendar();
 }
 async function cWrite(query){
- if(cLoading)return false;
+ if(cLoading){alert('Kalendarz właśnie się synchronizuje. Spróbuj zapisać ponownie za chwilę.');return false;}
  cLoading=true;
  let success=false;
  try{const r=await query;if(r.error)throw r.error;success=true}
