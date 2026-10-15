@@ -638,6 +638,29 @@ function calendarCSS(){return `<style>
 function cSelectOptions(){return Object.keys(cNames).map(k=>'<option value="'+k+'">'+esc(cNames[k])+'</option>').join('')+'<option value="all">Cała rodzina</option>'}
 function visibleChecks(){return checks.filter(x=>x.status==='pending')}
 function dayEvents(d){const arr=entriesFor(d);const bg=dateColor(arr);return {arr,bg}}
+// 16.10p: zachowuj niedokończony formularz przy odświeżaniu kalendarza.
+let calendarDraft=null;
+function saveCalendarDraft(){
+ const f=el('calAdd');if(!f)return;
+ calendarDraft={};
+ for(const field of f.querySelectorAll('input[name],select[name]')){
+  if(field.type==='checkbox'){
+   (calendarDraft[field.name]??=[]).push({value:field.value,checked:field.checked});
+  }else calendarDraft[field.name]=field.value;
+ }
+}
+function restoreCalendarDraft(f){
+ if(!calendarDraft)return;
+ for(const field of f.querySelectorAll('input[name],select[name]')){
+  if(!(field.name in calendarDraft))continue;
+  if(field.type==='checkbox'){
+   const item=calendarDraft[field.name].find(x=>x.value===field.value);
+   if(item)field.checked=item.checked;
+  }else field.value=calendarDraft[field.name];
+ }
+ const week=el('calWeek');
+ if(week)week.style.display=f.elements.rule.value==='weekly'?'block':'none';
+}
 function renderCalendar(){
  if(!familyId){el('content').innerHTML='<h2>📅 Kalendarz</h2><p>Najpierw zaloguj się do rodziny.</p>';return}
  const y=cMonth.getFullYear(),m=cMonth.getMonth(),days=new Date(y,m+1,0).getDate(),off=(new Date(y,m,1).getDay()+6)%7;
@@ -668,6 +691,7 @@ function renderCalendar(){
   const e=entries.find(x=>x.id===ch.entry_id);
   return e?'<div class="cal-line"><span class="label">'+esc(e.title)+' • '+esc(cNames[e.member_key]||'')+' • '+esc(ch.occurrence_date)+'</span><button data-capprove="'+esc(ch.id)+'">✓ Zatwierdź</button></div>':''
  }).join(''):'';
+ saveCalendarDraft();
  el('content').innerHTML=calendarCSS()+'<h2>📅 Kalendarz rodzinny</h2>'+
  (cError?'<p class="error">Kalendarz wymaga konfiguracji Supabase. '+esc(cError)+'</p>':'')+
  '<div class="cal-toolbar"><button data-cview="mine" class="'+(cView==='mine'?'sel':'')+'">👤 Mój</button><button data-cview="family" class="'+(cView==='family'?'sel':'')+'">👨‍👦‍👦 Cała rodzina</button></div>'+
@@ -696,6 +720,9 @@ function renderCalendar(){
  document.querySelectorAll('[data-cdelete]').forEach(b=>b.onclick=()=>deleteEntry(b.dataset.cdelete));
  const f=el('calAdd');
  if(f){
+  restoreCalendarDraft(f);
+  f.addEventListener('input',saveCalendarDraft);
+  f.addEventListener('change',saveCalendarDraft);
   const rule=f.elements.rule,week=el('calWeek');
   rule.onchange=()=>{week.style.display=rule.value==='weekly'?'block':'none'};
   f.onsubmit=async ev=>{
@@ -704,7 +731,8 @@ function renderCalendar(){
    const weekdays=[...f.querySelectorAll('[name="weekday"]:checked')].map(x=>Number(x.value));
    if(repeat_rule==='weekly'&&!weekdays.length){alert('Zaznacz przynajmniej jeden dzień tygodnia.');return}
    if(f.elements.end.value&&f.elements.end.value<start){alert('Data końca nie może być wcześniejsza niż początek.');return}
-   await cWrite(client.from('calendar_entries').insert({family_id:familyId,title,kind:f.elements.kind.value,member_key:f.elements.person.value,start_date:start,event_time:f.elements.time.value||null,repeat_rule,weekdays:repeat_rule==='weekly'?weekdays:[],end_date:f.elements.end.value||null}));
+   const result=await cWrite(client.from('calendar_entries').insert({family_id:familyId,title,kind:f.elements.kind.value,member_key:f.elements.person.value,start_date:start,event_time:f.elements.time.value||null,repeat_rule,weekdays:repeat_rule==='weekly'?weekdays:[],end_date:f.elements.end.value||null}));
+   if(result){calendarDraft=null;renderCalendar()}
   };
  }
 }
@@ -723,13 +751,15 @@ async function refreshCalendar(silent=false){
  if(tab==='kalendarz'&&!silent)renderCalendar();
 }
 async function cWrite(query){
- if(cLoading)return;
+ if(cLoading)return false;
  cLoading=true;
- try{const r=await query;if(r.error)throw r.error}
+ let success=false;
+ try{const r=await query;if(r.error)throw r.error;success=true}
  catch(e){alert('Nie zapisano: '+err(e))}
  finally{cLoading=false}
  await refreshCalendar();
  if(tab==='zadania')render();
+ return success;
 }
 async function changeCheck(id,d,state){
  const e=entries.find(x=>x.id===id);
