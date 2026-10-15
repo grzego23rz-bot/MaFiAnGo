@@ -107,7 +107,7 @@ footer{padding-top:7px;color:#8a83a6}
 .meal-ingredients label{display:flex;gap:9px;align-items:center;margin:7px 0;font-weight:500}
 .meal-ingredients input[type=checkbox]{width:20px;min-height:20px;margin:0;flex-shrink:0}
 .meal-vote-boxes{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}.meal-vote-box{width:32px;height:32px;border-radius:9px;background:#efedf5;border:1px solid #e4e0ed;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:800}.meal-vote-box.filled{background:#7658eb;border-color:#7658eb}.meal-option .meal-name{display:block}
-</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section id="pushSetup" class="push-setup"><button id="enablePush" class="secondary" type="button">🔔 Włącz powiadomienia</button><p id="pushInfo" class="muted" role="status">Powiadomienia są na razie przygotowywane.</p></section><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10t</footer></div><script>
+</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section id="pushSetup" class="push-setup"><button id="enablePush" class="secondary" type="button">🔔 Włącz powiadomienia</button><p id="pushInfo" class="muted" role="status">Powiadomienia są na razie przygotowywane.</p></section><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10u</footer></div><script>
 'use strict';
 const URL='https://wphgyimjbnlnzhwpakmw.supabase.co';
 const KEY='sb_publishable_zU7T-Y1klhyUpaRywWhLGg__uc_x1NG';
@@ -616,7 +616,7 @@ render=function(){
 'use strict';
 const cColors={tata:'#8e65d7',marcel:'#24aa65',filip:'#398de5',antek:'#b47ae5'};
 const cNames={tata:'Tata',marcel:'Marcel',filip:'Filip',antek:'Antek'};
-let entries=[],checks=[],cError='',cMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1),cDay=new Date().getDate(),cView='mine',cLoading=false;
+let entries=[],checks=[],calExceptions=[],cError='',cMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1),cDay=new Date().getDate(),cView='mine',cLoading=false;
 const iso=d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
 const localDate=s=>new Date(Number(s.slice(0,4)),Number(s.slice(5,7))-1,Number(s.slice(8,10)));
 const nameMonth=d=>d.toLocaleDateString('pl-PL',{month:'long',year:'numeric'});
@@ -633,7 +633,7 @@ function repeats(e,d){
  return diff===0;
 }
 function relevant(e){return cView==='family'||e.member_key===current||e.member_key==='all'||e.kind!=='task'}
-function entriesFor(d){return entries.filter(e=>repeats(e,d)&&relevant(e))}
+function entriesFor(d){return entries.filter(e=>repeats(e,d)&&relevant(e)&&!calExceptions.some(x=>x.entry_id===e.id&&x.occurrence_date===iso(d)))}
 function checked(e,d){return checks.find(x=>x.entry_id===e.id&&x.occurrence_date===iso(d))}
 function mark(e,d){const ch=checked(e,d);return ch?.status==='approved'?'✓':ch?.status==='pending'?'⏳':''}
 function kindColor(e){return e.kind==='birthday'?'#ed5867':e.kind==='visit'?'#f7d36b':null}
@@ -698,9 +698,9 @@ function renderCalendar(){
    (canRequest?'<button data-crequest="'+esc(e.id)+'">☐ Zrobione</button>':'')+
    (canApprove?'<button data-capprove="'+esc(ch.id)+'">✓ Zatwierdź</button>':'')+
    (canDadComplete?'<button data-cdone="'+esc(e.id)+'">✓ Zalicz</button>':'')+
-   (current==='tata'?'<button data-cdelete="'+esc(e.id)+'" title="Usuń wydarzenie">🗑️</button>':'')+'</div>'
+   (current==='tata'?'<button data-cdelete="'+esc(e.id)+'" title="Usuń wydarzenie">🗑️ Usuń</button>':'')+'</div>'
  }).join('')||'<p class="muted">Brak wydarzeń na ten dzień.</p>';
- const pending=current==='tata'?visibleChecks().map(ch=>{
+ const pending=current==='tata'?visibleChecks().filter(ch=>!calExceptions.some(x=>x.entry_id===ch.entry_id&&x.occurrence_date===ch.occurrence_date)).map(ch=>{
   const e=entries.find(x=>x.id===ch.entry_id);
   return e?'<div class="cal-line"><span class="label">'+esc(e.title)+' • '+esc(cNames[e.member_key]||'')+' • '+esc(ch.occurrence_date)+'</span><button data-capprove="'+esc(ch.id)+'">✓ Zatwierdź</button></div>':''
  }).join(''):'';
@@ -730,7 +730,7 @@ function renderCalendar(){
  document.querySelectorAll('[data-crequest]').forEach(b=>b.onclick=()=>changeCheck(b.dataset.crequest,selected,'pending'));
  document.querySelectorAll('[data-cdone]').forEach(b=>b.onclick=()=>changeCheck(b.dataset.cdone,selected,'approved'));
  document.querySelectorAll('[data-capprove]').forEach(b=>b.onclick=()=>approveCheck(b.dataset.capprove));
- document.querySelectorAll('[data-cdelete]').forEach(b=>b.onclick=()=>deleteEntry(b.dataset.cdelete));
+ document.querySelectorAll('[data-cdelete]').forEach(b=>b.onclick=()=>deleteEntry(b.dataset.cdelete,selected));
  const f=el('calAdd');
  if(f){
   restoreCalendarDraft(f);
@@ -757,7 +757,7 @@ let dadInboxOpen=false;
 function renderDadInbox(){
  const host=el('dadInboxHost');if(!host)return;
  if(current!=='tata'||!familyId){host.hidden=true;host.innerHTML='';dadInboxOpen=false;return}
- const pending=checks.filter(ch=>ch.status==='pending').map(ch=>({ch,e:entries.find(e=>e.id===ch.entry_id)})).filter(x=>x.e);
+ const pending=checks.filter(ch=>ch.status==='pending'&&!calExceptions.some(x=>x.entry_id===ch.entry_id&&x.occurrence_date===ch.occurrence_date)).map(ch=>({ch,e:entries.find(e=>e.id===ch.entry_id)})).filter(x=>x.e);
  host.hidden=false;
  host.innerHTML='<button type="button" id="dadInboxToggle" class="dad-inbox-toggle" aria-expanded="'+dadInboxOpen+'">'+
   (pending.length?'🔴 Do zatwierdzenia: '+pending.length:'🔔 Zgłoszenia dzieci: 0')+'</button>'+
@@ -790,12 +790,13 @@ async function refreshCalendar(silent=false){
  if(!familyId||!current||cLoading)return;
  cLoading=true;
  try{
-  const [a,b]=await Promise.all([
+  const [a,b,x]=await Promise.all([
    client.from('calendar_entries').select('*').eq('family_id',familyId),
-   client.from('calendar_checks').select('*').eq('family_id',familyId)
+   client.from('calendar_checks').select('*').eq('family_id',familyId),
+   client.from('calendar_exceptions').select('*').eq('family_id',familyId)
   ]);
-  if(a.error)throw a.error;if(b.error)throw b.error;
-  entries=a.data||[];checks=b.data||[];cError='';
+  if(a.error)throw a.error;if(b.error)throw b.error;if(x.error)throw x.error;
+  entries=a.data||[];checks=b.data||[];calExceptions=x.data||[];cError='';
  }catch(e){cError=err(e)}
  finally{cLoading=false}
  renderDadInbox();
@@ -820,7 +821,24 @@ async function changeCheck(id,d,state){
  await cWrite(client.from('calendar_checks').insert({family_id:familyId,entry_id:id,occurrence_date:iso(d),status:current==='tata'?'approved':'pending'}));
 }
 async function approveCheck(id){if(current!=='tata')return;await cWrite(client.from('calendar_checks').update({status:'approved'}).eq('id',id).eq('family_id',familyId))}
-async function deleteEntry(id){if(current!=='tata'||!confirm('Usunąć to wydarzenie wraz z jego przyszłymi terminami?'))return;await cWrite(client.from('calendar_entries').delete().eq('id',id).eq('family_id',familyId))}
+async function deleteEntry(id,d){
+ if(current!=='tata')return;
+ const entry=entries.find(e=>e.id===id);if(!entry)return;
+ const recurring=entry.repeat_rule!=='once';
+ if(!recurring){
+  if(!confirm('Usunąć wydarzenie „'+entry.title+'” z kalendarza?'))return;
+  await cWrite(client.from('calendar_entries').delete().eq('id',id).eq('family_id',familyId));return;
+ }
+ const choice=prompt('Usuwanie: '+entry.title+' ('+iso(d)+')\n\nWpisz 1 – usuń tylko ten dzień\nWpisz 2 – usuń całą serię\nAnuluj – nic nie zmieniaj','1');
+ if(choice===null)return;
+ if(choice==='1'){
+  if(!confirm('Usunąć tylko wystąpienie z '+iso(d)+'? Pozostałe terminy zostaną.'))return;
+  await cWrite(client.from('calendar_exceptions').insert({family_id:familyId,entry_id:id,occurrence_date:iso(d)}));
+ }else if(choice==='2'){
+  if(!confirm('Usunąć CAŁĄ serię „'+entry.title+'” wraz ze wszystkimi terminami?'))return;
+  await cWrite(client.from('calendar_entries').delete().eq('id',id).eq('family_id',familyId));
+ }else alert('Wpisz 1 albo 2. Niczego nie usunięto.');
+}
 const prevRender=render;
 render=function(){
  if(tab==='kalendarz'){renderCalendar();return}
@@ -851,7 +869,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current&&
 })();
 
 </script><script>
-// MaFiAnGo 16.10t — Jedzenie; niezależny moduł, nie modyfikuje istniejących tabel.
+// MaFiAnGo 16.10u — Jedzenie; niezależny moduł, nie modyfikuje istniejących tabel.
 (function(){
  'use strict';
  const names={breakfast:'🥐 Śniadanie',lunch:'🍝 Obiad',dinner:'🥪 Kolacja'};
