@@ -94,7 +94,19 @@ footer{padding-top:7px;color:#8a83a6}
 /* MaFiAnGo 16.10i — przygotowanie powiadomień */
 .push-setup{margin-top:12px;padding:12px 15px;background:#fff;border:1px solid #e9e5fc;border-radius:18px;text-align:center}
 .push-setup #enablePush{width:100%}.push-setup #pushInfo{margin:8px 0 0;font-size:12px}
-</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section id="pushSetup" class="push-setup"><button id="enablePush" class="secondary" type="button">🔔 Włącz powiadomienia</button><p id="pushInfo" class="muted" role="status">Powiadomienia są na razie przygotowywane.</p></section><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10n</footer></div><script>
+</style><style>
+.tabs button[data-tab=jedzenie]{background:#fff0e2;border-color:#ffdec2;color:#a34d17}
+.tabs button[data-tab=jedzenie].active{background:linear-gradient(120deg,#f48b48,#ed6d74);color:white;border-color:#f48b48}
+.meal-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0}
+.meal-choices button{border:2px solid #f6ddca;background:#fff8f1;border-radius:13px;padding:12px 4px;font-size:13px;font-weight:700}
+.meal-choices button.selected{background:#f48b48;color:#fff;border-color:#f48b48}
+.meal-option{display:flex;align-items:center;gap:9px;padding:12px;border:1px solid #f2e6df;border-radius:13px;margin:8px 0;background:#fffdfb}
+.meal-option .meal-name{flex:1;min-width:0;overflow-wrap:anywhere}.meal-option button{flex-shrink:0}
+.meal-result{padding:14px;border-radius:15px;background:#e9f8ed;color:#235c3b;margin:12px 0}
+.meal-ingredients{background:#fff8ee;border-radius:15px;padding:13px;margin-top:14px}
+.meal-ingredients label{display:flex;gap:9px;align-items:center;margin:7px 0;font-weight:500}
+.meal-ingredients input[type=checkbox]{width:20px;min-height:20px;margin:0;flex-shrink:0}
+</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section id="pushSetup" class="push-setup"><button id="enablePush" class="secondary" type="button">🔔 Włącz powiadomienia</button><p id="pushInfo" class="muted" role="status">Powiadomienia są na razie przygotowywane.</p></section><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10s</footer></div><script>
 'use strict';
 const URL='https://wphgyimjbnlnzhwpakmw.supabase.co';
 const KEY='sb_publishable_zU7T-Y1klhyUpaRywWhLGg__uc_x1NG';
@@ -837,4 +849,92 @@ setInterval(()=>{if(current&&familyId&&!document.hidden&&!cLoading)refreshCalend
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current&&familyId)refreshCalendar()});
 })();
 
+</script><script>
+// MaFiAnGo 16.10s — Jedzenie; niezależny moduł, nie modyfikuje istniejących tabel.
+(function(){
+ 'use strict';
+ const names={breakfast:'🥐 Śniadanie',lunch:'🍝 Obiad',dinner:'🥪 Kolacja'};
+ const types=Object.keys(names);
+ let chosen='lunch',proposals=[],votes=[],results=[],mealBusy=false,mealError='',ingredientsDraft=null,mealTimer=null;
+ const todayWarsaw=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Warsaw',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+ function tomorrow(){const a=todayWarsaw().split('-').map(Number);return new Date(Date.UTC(a[0],a[1]-1,a[2]+1)).toISOString().slice(0,10)}
+ const mealDate=()=>tomorrow();
+ function mealUid(){return members.find(m=>m.name?.toLowerCase()===accounts[current]?.name.toLowerCase())?.user_id||null}
+ function mealResult(){return results.find(r=>r.meal_type===chosen)}
+ async function syncMeals(draw=true){
+  if(!current||!familyId||mealBusy)return;
+  const d=mealDate();
+  try{
+   const rs=await Promise.all(['meal_proposals','meal_votes','meal_results'].map(t=>client.from(t).select('*').eq('family_id',familyId).eq('meal_date',d)));
+   for(const r of rs)if(r.error)throw r.error;
+   [proposals,votes,results]=rs.map(r=>r.data||[]);mealError='';
+  }catch(e){mealError=err(e)}
+  if(draw&&tab==='jedzenie')renderMeals();
+ }
+ async function mealAction(fn){if(mealBusy)return;mealBusy=true;try{await fn();mealError=''}catch(e){mealError=err(e);alert('Jedzenie: '+mealError)}finally{mealBusy=false;await syncMeals(false);if(tab==='jedzenie')renderMeals()}}
+ async function mealRpc(id){const token=await accessToken();if(!token)throw Error('Zaloguj się ponownie');await request('/rest/v1/rpc/mafiango_cast_meal_vote','POST',{p_proposal:id},token)}
+ function mealSuggest(title){
+  const t=title.toLocaleLowerCase('pl');
+  const dict=[
+   [/lasagn|lazani/,['makaron lasagne','mięso mielone','passata pomidorowa','cebula','czosnek','ser mozzarella','mleko','masło','mąka']],
+   [/pizz/,['mąka','drożdże','passata pomidorowa','ser mozzarella','szynka','pieczarki']],
+   [/pierog/,['mąka','ziemniaki','twaróg','cebula','masło']],
+   [/schabow/,['schab','jajka','bułka tarta','mąka','ziemniaki','surówka']],
+   [/spaghett|bolon/,['makaron spaghetti','mięso mielone','passata pomidorowa','cebula','czosnek','ser']],
+   [/naleśnik/,['mąka','mleko','jajka','olej','dżem lub twaróg']],
+   [/jajeczn/,['jajka','masło','szczypiorek','pieczywo']],
+   [/kanapk|tost/,['pieczywo','ser','szynka','masło','pomidor']],
+   [/owsiank/,['płatki owsiane','mleko','banany','owoce']],
+   [/zup|rosół/,['marchew','pietruszka','seler','cebula','makaron','mięso lub bulion']],
+   [/burger/,['bułki do burgerów','mięso mielone','sałata','pomidor','ser','ogórki']],
+   [/kurczak/,['kurczak','ryż lub ziemniaki','przyprawy','warzywa']],
+   [/sałatk/,['sałata','pomidor','ogórek','oliwa','ser feta']]
+  ];
+  return (dict.find(([re])=>re.test(t))||[null,[]])[1];
+ }
+ function renderMeals(){
+  if(!familyId){el('content').innerHTML='<h2>🍽️ Jedzenie</h2><p>Najpierw zaloguj się.</p>';return}
+  const d=mealDate(),selected=proposals.filter(p=>p.meal_type===chosen),voted=votes.filter(v=>v.meal_type===chosen),uid=mealUid(),mine=voted.find(v=>v.voter_id===uid),res=mealResult();
+  const win=res&&proposals.find(p=>p.id===res.proposal_id);
+  const allCount=members.filter(m=>m.user_id).length;
+  el('content').innerHTML='<h2>🍽️ Co jemy jutro?</h2><p class="muted">Głosujemy na '+esc(new Date(d+'T12:00:00').toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'}))+'. Każdy z domowników proponuje i głosuje. Przy remisie aplikacja losuje.</p>'+
+   '<div class="meal-choices">'+types.map(t=>'<button type="button" data-meal="'+t+'" class="'+(chosen===t?'selected':'')+'">'+names[t]+(results.some(r=>r.meal_type===t)?' ✓':'')+'</button>').join('')+'</div>'+
+   (mealError?'<p class="error">'+esc(mealError)+' — sprawdź, czy uruchomiono SQL w Supabase.</p>':'')+
+   '<h3>'+names[chosen]+' na jutro</h3>'+
+   (res?'<div class="meal-result"><strong>🎉 Wybraliśmy: '+esc(win?.title||'Wybrane danie')+'</strong><p style="margin-bottom:0">Wszyscy zagłosowali! Jutro pojawi się nowe głosowanie.</p></div>':
+    '<p class="muted">Zagłosowało '+voted.length+' z '+allCount+' osób. '+(mine?'Twój głos można zmienić do zakończenia głosowania.':'Wybierz swoją propozycję.')+'</p>')+
+   (!res?(selected.map(p=>'<div class="meal-option"><span class="meal-name"><strong>'+esc(p.title)+'</strong><br><span class="muted">'+esc(nameOf(p.created_by))+' • '+voted.filter(v=>v.proposal_id===p.id).length+' gł.</span></span><button type="button" class="secondary" data-meal-vote="'+esc(p.id)+'" '+(mine?.proposal_id===p.id?'disabled':'')+'>'+(mine?.proposal_id===p.id?'✓ Mój głos':'Głosuj')+'</button></div>').join('')||'<p class="muted">Nie ma jeszcze propozycji. Dodaj pierwszą!</p>')+
+    '<form id="mealAdd"><label for="mealTitle">Zaproponuj danie</label><input id="mealTitle" maxlength="120" placeholder="Np. lasagne, naleśniki, pizza…" required><button class="primary">➕ Dodaj propozycję</button></form>':'')+
+   (res&&win?'<div class="meal-ingredients"><h3>🛒 Składniki do zakupów</h3><p class="muted">To przykładowe podpowiedzi. Zaznacz potrzebne produkty, możesz je poprawić i dodać własne.</p><div id="mealIngredientList"></div><label for="mealExtra">Dodaj własne składniki (oddziel przecinkami)</label><input id="mealExtra" placeholder="Np. bazylia, oliwa"><button class="primary" id="mealToShopping">🛒 Dodaj zaznaczone do zakupów</button></div>':'');
+  document.querySelectorAll('[data-meal]').forEach(b=>b.onclick=()=>{chosen=b.dataset.meal;ingredientsDraft=null;renderMeals()});
+  document.querySelectorAll('[data-meal-vote]').forEach(b=>b.onclick=()=>mealAction(()=>mealRpc(b.dataset.mealVote)));
+  const form=el('mealAdd');if(form)form.onsubmit=e=>{e.preventDefault();const title=el('mealTitle').value.trim();if(!title)return;mealAction(async()=>{const u=await client.auth.getUser();if(u.error||!u.data?.user?.id)throw Error('Brak sesji');const r=await client.from('meal_proposals').insert({family_id:familyId,meal_date:d,meal_type:chosen,title,created_by:u.data.user.id});if(r.error)throw r.error})};
+  if(res&&win){
+   if(!ingredientsDraft||ingredientsDraft.id!==win.id)ingredientsDraft={id:win.id,items:mealSuggest(win.title).map(x=>({name:x,checked:true}))};
+   const list=el('mealIngredientList');
+   list.innerHTML=ingredientsDraft.items.length?ingredientsDraft.items.map((x,i)=>'<label><input type="checkbox" data-ingredient="'+i+'" '+(x.checked?'checked':'')+'><input type="text" data-ingredient-name="'+i+'" maxlength="120" value="'+esc(x.name)+'" aria-label="Nazwa składnika"></label>').join(''):'<p class="muted">Nie znam jeszcze składników tej potrawy — wpisz je poniżej.</p>';
+   list.querySelectorAll('[data-ingredient]').forEach(b=>b.onchange=()=>{ingredientsDraft.items[Number(b.dataset.ingredient)].checked=b.checked});
+   list.querySelectorAll('[data-ingredient-name]').forEach(b=>b.oninput=()=>{ingredientsDraft.items[Number(b.dataset.ingredientName)].name=b.value});
+   el('mealToShopping').onclick=()=>mealAction(async()=>{
+    const extra=el('mealExtra').value.split(',').map(x=>x.trim()).filter(Boolean);
+    const items=[...ingredientsDraft.items.filter(x=>x.checked).map(x=>x.name.trim()),...extra].filter(Boolean);
+    if(!items.length)throw Error('Zaznacz lub wpisz składniki');
+    const u=await client.auth.getUser();if(u.error||!u.data?.user?.id)throw Error('Brak sesji');
+    const existing=new Set(shopping.map(x=>x.text.toLocaleLowerCase('pl')));
+    const unique=[...new Set(items)].filter(x=>!existing.has(x.toLocaleLowerCase('pl')));
+    if(!unique.length){alert('Te składniki są już na liście zakupów.');return}
+    const r=await client.from('shopping_items').insert(unique.map(text=>({family_id:familyId,text,done:false,created_by:u.data.user.id})));
+    if(r.error)throw r.error;
+    await load();alert('Dodano '+unique.length+' produktów do listy zakupów!');
+   });
+  }
+ }
+ const baseRender=render;
+ render=function(){if(tab==='jedzenie'){renderMeals();return}baseRender()};
+ const button=document.createElement('button');button.type='button';button.dataset.tab='jedzenie';button.innerHTML='<span class="tab-icon">🍽️</span>Jedzenie';document.querySelector('.tabs').appendChild(button);
+ button.onclick=()=>{tab='jedzenie';render();syncMeals()};
+ const baseLoad=load;load=async function(){await baseLoad();if(current&&familyId)await syncMeals()};
+ mealTimer=setInterval(()=>{if(current&&familyId&&!document.hidden&&!mealBusy)syncMeals()},20000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current&&familyId)syncMeals()});
+})();
 </script></body></html>
