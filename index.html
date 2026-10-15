@@ -597,4 +597,176 @@ render=function(){
   });
   window.addEventListener('focus',syncInBackground);
 })();
+</script><script>
+
+(function(){
+'use strict';
+const cColors={tata:'#8e65d7',marcel:'#24aa65',filip:'#398de5',antek:'#b47ae5'};
+const cNames={tata:'Tata',marcel:'Marcel',filip:'Filip',antek:'Antek'};
+let entries=[],checks=[],cError='',cMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1),cDay=new Date().getDate(),cView='mine',cLoading=false;
+const iso=d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+const localDate=s=>new Date(Number(s.slice(0,4)),Number(s.slice(5,7))-1,Number(s.slice(8,10)));
+const nameMonth=d=>d.toLocaleDateString('pl-PL',{month:'long',year:'numeric'});
+const sameDay=(a,b)=>iso(a)===iso(b);
+const dayKey=(e,d)=>e.id+'|'+iso(d);
+function repeats(e,d){
+ const start=localDate(e.start_date);
+ if(d<start || (e.end_date&&iso(d)>e.end_date))return false;
+ const diff=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(start.getFullYear(),start.getMonth(),start.getDate()))/86400000);
+ if(e.repeat_rule==='daily')return true;
+ if(e.repeat_rule==='weekly')return (e.weekdays||[]).map(Number).includes(d.getDay());
+ if(e.repeat_rule==='monthly')return d.getDate()===start.getDate();
+ if(e.repeat_rule==='yearly')return d.getDate()===start.getDate()&&d.getMonth()===start.getMonth();
+ return diff===0;
+}
+function relevant(e){return cView==='family'||e.member_key===current||e.member_key==='all'||e.kind!=='task'}
+function entriesFor(d){return entries.filter(e=>repeats(e,d)&&relevant(e))}
+function checked(e,d){return checks.find(x=>x.entry_id===e.id&&x.occurrence_date===iso(d))}
+function mark(e,d){const ch=checked(e,d);return ch?.status==='approved'?'✓':ch?.status==='pending'?'⏳':''}
+function kindColor(e){return e.kind==='birthday'?'#ed5867':e.kind==='visit'?'#f7d36b':null}
+function dateColor(items){return items.some(x=>x.kind==='birthday')?'birthday':items.some(x=>x.kind==='visit')?'visit':''}
+function calendarCSS(){return `<style>
+.tabs{flex-wrap:wrap}.tabs button{min-width:90px}
+.cal-toolbar{display:flex;gap:7px;margin:12px 0}.cal-toolbar button{flex:1;padding:11px 4px;border:0;border-radius:12px;background:#eeeafd;color:#5546bf;font-weight:700}.cal-toolbar button.sel{background:#6658eb;color:white}
+.cal-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 0}.cal-nav button{border:0;border-radius:12px;padding:8px 15px;background:#eeeafd}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.cal-week{text-align:center;font-size:12px;font-weight:700;color:#77758b;padding:5px 0}
+.cal-cell{min-width:0;min-height:62px;border:1px solid #eeeaf6;background:#f8f7fd;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;padding:5px 1px;color:#27314f}.cal-cell.selected{outline:2px solid #6658eb}.cal-cell.birthday{background:#ed5867;color:white}.cal-cell.visit{background:#f7d36b;color:#473713}
+.cal-daynum{font-weight:800;font-size:15px}.cal-dots{display:flex;flex-wrap:wrap;gap:3px;justify-content:center}.cal-dot{display:inline-flex;justify-content:center;align-items:center;width:13px;height:13px;border-radius:50%;font-size:10px;color:white;font-weight:bold}
+.cal-line{display:flex;align-items:center;gap:8px;padding:12px 8px;border-bottom:1px solid #efedf6}.cal-line .label{flex:1;min-width:0;overflow-wrap:anywhere}.cal-line button{border:0;border-radius:10px;background:#eeeafd;padding:9px;font-size:12px}.cal-badge{width:13px;height:13px;flex-shrink:0;border-radius:50%}.cal-form{padding:13px;background:#f8f6ff;border-radius:15px;margin:15px 0}.cal-form label{display:block;font-size:13px;font-weight:700;margin-top:9px}.cal-form input,.cal-form select{margin:4px 0}.cal-legend{display:flex;gap:9px;flex-wrap:wrap;font-size:12px;margin:12px 0}
+.cal-hint{font-size:12px;color:#77758b}
+</style>`}
+function cSelectOptions(){return Object.keys(cNames).map(k=>'<option value="'+k+'">'+esc(cNames[k])+'</option>').join('')+'<option value="all">Cała rodzina</option>'}
+function visibleChecks(){return checks.filter(x=>x.status==='pending')}
+function dayEvents(d){const arr=entriesFor(d);const bg=dateColor(arr);return {arr,bg}}
+function renderCalendar(){
+ if(!familyId){el('content').innerHTML='<h2>📅 Kalendarz</h2><p>Najpierw zaloguj się do rodziny.</p>';return}
+ const y=cMonth.getFullYear(),m=cMonth.getMonth(),days=new Date(y,m+1,0).getDate(),off=(new Date(y,m,1).getDay()+6)%7;
+ const selected=new Date(y,m,Math.min(cDay,days));
+ const cells=Array.from({length:off},()=>'<div></div>').join('')+Array.from({length:days},(_,i)=>{
+  const d=new Date(y,m,i+1),info=dayEvents(d);
+  const dots=info.arr.filter(e=>e.kind==='task');
+  const ownDots=cView==='mine'?dots.filter(e=>e.member_key===current):dots;
+  const distinct=[...new Set(ownDots.map(e=>e.member_key))];
+  const dotHTML=distinct.map(key=>'<span class="cal-dot" style="background:'+cColors[key]+'">'+(ownDots.some(e=>e.member_key===key&&mark(e,d)==='✓')?'✓':'')+'</span>').join('');
+  return '<button type="button" class="cal-cell '+info.bg+(cDay===i+1?' selected':'')+'" data-cday="'+(i+1)+'"><span class="cal-daynum">'+(i+1)+'</span><span style="font-size:12px">'+(info.bg==='birthday'?'🎂':info.bg==='visit'?'🩺':'')+'</span><span class="cal-dots">'+dotHTML+'</span></button>'
+ }).join('');
+ const events=entriesFor(selected);
+ const lines=events.map(e=>{
+  const ch=checked(e,selected),isTask=e.kind==='task';
+  const canRequest=isTask&&e.member_key===current&&current!=='tata'&&!ch;
+  const canApprove=current==='tata'&&isTask&&ch?.status==='pending';
+  const canDadComplete=current==='tata'&&isTask&&!ch;
+  const state=ch?.status==='approved'?'✅ Zatwierdzone':ch?.status==='pending'?'⏳ Czeka na Tatę':'';
+  const desc=e.member_key==='all'?'Cała rodzina':cNames[e.member_key]||e.member_key;
+  return '<div class="cal-line"><span class="cal-badge" style="background:'+(kindColor(e)||cColors[e.member_key]||'#aaa')+'"></span><div class="label"><strong>'+esc(e.title)+'</strong><div class="cal-hint">'+esc(desc)+(e.event_time?' • '+esc(e.event_time.slice(0,5)):'')+(state?' • '+state:'')+'</div></div>'+
+   (canRequest?'<button data-crequest="'+esc(e.id)+'">☐ Zrobione</button>':'')+
+   (canApprove?'<button data-capprove="'+esc(ch.id)+'">✓ Zatwierdź</button>':'')+
+   (canDadComplete?'<button data-cdone="'+esc(e.id)+'">✓ Zalicz</button>':'')+
+   (current==='tata'?'<button data-cdelete="'+esc(e.id)+'" title="Usuń wydarzenie">🗑️</button>':'')+'</div>'
+ }).join('')||'<p class="muted">Brak wydarzeń na ten dzień.</p>';
+ const pending=current==='tata'?visibleChecks().map(ch=>{
+  const e=entries.find(x=>x.id===ch.entry_id);
+  return e?'<div class="cal-line"><span class="label">'+esc(e.title)+' • '+esc(cNames[e.member_key]||'')+' • '+esc(ch.occurrence_date)+'</span><button data-capprove="'+esc(ch.id)+'">✓ Zatwierdź</button></div>':''
+ }).join(''):'';
+ el('content').innerHTML=calendarCSS()+'<h2>📅 Kalendarz rodzinny</h2>'+
+ (cError?'<p class="error">Kalendarz wymaga konfiguracji Supabase. '+esc(cError)+'</p>':'')+
+ '<div class="cal-toolbar"><button data-cview="mine" class="'+(cView==='mine'?'sel':'')+'">👤 Mój</button><button data-cview="family" class="'+(cView==='family'?'sel':'')+'">👨‍👦‍👦 Cała rodzina</button></div>'+
+ '<div class="cal-nav"><button data-cmove="-1">‹</button><strong>'+esc(nameMonth(cMonth))+'</strong><button data-cmove="1">›</button></div>'+
+ '<div class="cal-grid">'+['Pn','Wt','Śr','Cz','Pt','So','Nd'].map(x=>'<div class="cal-week">'+x+'</div>').join('')+cells+'</div>'+
+ '<div class="cal-legend"><span>🟥 Urodziny</span><span>🟨 Wizyty i terminy</span><span>🟢 Marcel</span><span>🔵 Filip</span><span>🟣 Antek</span><span>✓ Zatwierdzone</span></div>'+
+ '<h3>📍 '+esc(selected.toLocaleDateString('pl-PL',{day:'numeric',month:'long'}))+'</h3>'+lines+
+ (current==='tata'&&pending?'<h3>⏳ Do zatwierdzenia</h3>'+pending:'')+
+ (current==='tata'?'<h3>➕ Dodaj wydarzenie lub zadanie</h3><form id="calAdd" class="cal-form">'+
+ '<label>Co planujemy?</label><input name="title" maxlength="140" required placeholder="Np. posprzątaj pokój">'+
+ '<label>Rodzaj</label><select name="kind"><option value="task">🟢 Zadanie</option><option value="birthday">🎂 Urodziny / rocznica (czerwony dzień)</option><option value="visit">🩺 Wizyta / ważny termin (żółty dzień)</option></select>'+
+ '<label>Dla kogo?</label><select name="person">'+cSelectOptions()+'</select>'+
+ '<label>Początek</label><input name="start" type="date" value="'+iso(selected)+'" required>'+
+ '<label>Godzina (opcjonalnie)</label><input name="time" type="time">'+
+ '<label>Powtarzanie</label><select name="rule"><option value="once">Jednorazowo</option><option value="daily">Codziennie</option><option value="weekly">Co tydzień</option><option value="monthly">Co miesiąc (ten sam dzień)</option><option value="yearly">Co roku</option></select>'+
+ '<div id="calWeek" style="display:none"><label>Dni tygodnia (możesz wybrać kilka)</label><div style="display:flex;flex-wrap:wrap;gap:9px">'+['Nd','Pn','Wt','Śr','Cz','Pt','So'].map((x,i)=>'<label style="display:inline-flex;align-items:center;gap:4px"><input style="width:auto" type="checkbox" name="weekday" value="'+i+'">'+x+'</label>').join('')+'</div></div>'+
+ '<label>Koniec powtarzania (opcjonalnie)</label><input name="end" type="date">'+
+ '<button class="primary" style="width:100%;margin-top:10px" '+(cError?'disabled':'')+'>Zapisz w kalendarzu</button></form>':'')+
+ '<p class="cal-hint">Zadania powtarzają się według ustalonego harmonogramu. Każdy termin ma osobne zatwierdzenie.</p>';
+ document.querySelectorAll('[data-cday]').forEach(b=>b.onclick=()=>{cDay=Number(b.dataset.cday);renderCalendar()});
+ document.querySelectorAll('[data-cmove]').forEach(b=>b.onclick=()=>{cMonth=new Date(y,m+Number(b.dataset.cmove),1);cDay=1;renderCalendar()});
+ document.querySelectorAll('[data-cview]').forEach(b=>b.onclick=()=>{cView=b.dataset.cview;renderCalendar()});
+ document.querySelectorAll('[data-crequest]').forEach(b=>b.onclick=()=>changeCheck(b.dataset.crequest,selected,'pending'));
+ document.querySelectorAll('[data-cdone]').forEach(b=>b.onclick=()=>changeCheck(b.dataset.cdone,selected,'approved'));
+ document.querySelectorAll('[data-capprove]').forEach(b=>b.onclick=()=>approveCheck(b.dataset.capprove));
+ document.querySelectorAll('[data-cdelete]').forEach(b=>b.onclick=()=>deleteEntry(b.dataset.cdelete));
+ const f=el('calAdd');
+ if(f){
+  const rule=f.elements.rule,week=el('calWeek');
+  rule.onchange=()=>{week.style.display=rule.value==='weekly'?'block':'none'};
+  f.onsubmit=async ev=>{
+   ev.preventDefault();
+   const title=f.elements.title.value.trim(),start=f.elements.start.value,repeat_rule=rule.value;
+   const weekdays=[...f.querySelectorAll('[name="weekday"]:checked')].map(x=>Number(x.value));
+   if(repeat_rule==='weekly'&&!weekdays.length){alert('Zaznacz przynajmniej jeden dzień tygodnia.');return}
+   if(f.elements.end.value&&f.elements.end.value<start){alert('Data końca nie może być wcześniejsza niż początek.');return}
+   await cWrite(client.from('calendar_entries').insert({family_id:familyId,title,kind:f.elements.kind.value,member_key:f.elements.person.value,start_date:start,event_time:f.elements.time.value||null,repeat_rule,weekdays:repeat_rule==='weekly'?weekdays:[],end_date:f.elements.end.value||null}));
+  };
+ }
+}
+async function refreshCalendar(silent=false){
+ if(!familyId||!current||cLoading)return;
+ cLoading=true;
+ try{
+  const [a,b]=await Promise.all([
+   client.from('calendar_entries').select('*').eq('family_id',familyId),
+   client.from('calendar_checks').select('*').eq('family_id',familyId)
+  ]);
+  if(a.error)throw a.error;if(b.error)throw b.error;
+  entries=a.data||[];checks=b.data||[];cError='';
+ }catch(e){cError=err(e)}
+ finally{cLoading=false}
+ if(tab==='kalendarz'&&!silent)renderCalendar();
+}
+async function cWrite(query){
+ if(cLoading)return;
+ cLoading=true;
+ try{const r=await query;if(r.error)throw r.error}
+ catch(e){alert('Nie zapisano: '+err(e))}
+ finally{cLoading=false}
+ await refreshCalendar();
+ if(tab==='zadania')render();
+}
+async function changeCheck(id,d,state){
+ const e=entries.find(x=>x.id===id);
+ if(!e||e.kind!=='task')return;
+ if(current!=='tata'&&e.member_key!==current)return;
+ if(checked(e,d))return;
+ await cWrite(client.from('calendar_checks').insert({family_id:familyId,entry_id:id,occurrence_date:iso(d),status:current==='tata'?'approved':'pending'}));
+}
+async function approveCheck(id){if(current!=='tata')return;await cWrite(client.from('calendar_checks').update({status:'approved'}).eq('id',id).eq('family_id',familyId))}
+async function deleteEntry(id){if(current!=='tata'||!confirm('Usunąć to wydarzenie wraz z jego przyszłymi terminami?'))return;await cWrite(client.from('calendar_entries').delete().eq('id',id).eq('family_id',familyId))}
+const prevRender=render;
+render=function(){
+ if(tab==='kalendarz'){renderCalendar();return}
+ prevRender();
+ if(tab==='zadania'&&familyId&&!cError){
+  const d=new Date(),today=entries.filter(e=>e.kind==='task'&&repeats(e,d)&&(current==='tata'||e.member_key===current||e.member_key==='all'));
+  const container=document.createElement('div');
+  container.innerHTML='<h3>🔁 Zadania cykliczne na dziś</h3>'+
+   (today.map(e=>{const ch=checked(e,d),status=ch?.status==='approved'?'✓ Zatwierdzone':ch?.status==='pending'?'⏳ Czeka na Tatę':'Do wykonania';
+    return '<div class="item"><span class="label">'+esc(e.title)+'<div class="muted">'+esc(cNames[e.member_key]||'Cała rodzina')+' • '+status+'</div></span>'+
+    (!ch&&e.member_key===current&&current!=='tata'?'<button class="secondary" data-ctoday="'+esc(e.id)+'">☐ Zrobione</button>':'')+
+    (current==='tata'&&ch?.status==='pending'?'<button class="secondary" data-capproval="'+esc(ch.id)+'">✓ Zatwierdź</button>':'')+'</div>'
+   }).join('')||'<p class="muted">Brak zadań cyklicznych na dziś.</p>');
+  el('content').appendChild(container);
+  container.querySelectorAll('[data-ctoday]').forEach(b=>b.onclick=()=>changeCheck(b.dataset.ctoday,d,'pending'));
+  container.querySelectorAll('[data-capproval]').forEach(b=>b.onclick=()=>approveCheck(b.dataset.capproval));
+ }
+};
+const prevLoad=load;
+load=async function(){await prevLoad();if(current&&familyId)await refreshCalendar()};
+const tabs=document.querySelector('.tabs');
+const newTab=document.createElement('button');
+newTab.type='button';newTab.dataset.tab='kalendarz';newTab.innerHTML='<span class="tab-icon">📅</span>Kalendarz';
+tabs.appendChild(newTab);
+newTab.onclick=()=>{tab='kalendarz';render();refreshCalendar()};
+setInterval(()=>{if(current&&familyId&&!document.hidden&&!cLoading)refreshCalendar()},20000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current&&familyId)refreshCalendar()});
+})();
+
 </script></body></html>
