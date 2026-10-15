@@ -11,7 +11,7 @@ let current=null,familyId=null,members=[],shopping=[],tasks=[],tab='zakupy',busy
 const el=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function err(e){return e?.message||String(e)}
-function status(s,isError=false){el('status').textContent=s;el('status').className=isError?'error':'muted'}
+function status(s,isError=false){el('status').textContent=s;el('status').className=isError?'error':'muted'} 
 function nameOf(id){return members.find(x=>x.user_id===id||x.id===id)?.name||'Domownik'}
 function memberId(key){const n=accounts[key].name.toLowerCase();return members.find(m=>String(m.name).toLowerCase()===n)?.user_id||null}
 async function login(){el('loginError').textContent='';if(!client){el('loginError').textContent='Nie załadowała się biblioteka Supabase. Sprawdź internet lub spróbuj ponownie później.';return;}const key=el('profile').value;const password=el('password').value;if(!password){el('loginError').textContent='Wpisz hasło.';return}el('loginBtn').disabled=true;try{const {data,error}=await client.auth.signInWithPassword({email:accounts[key].email,password});if(error)throw error;el('password').value='';await start(data.user)}catch(e){el('loginError').textContent='Nie udało się zalogować: '+err(e)}finally{el('loginBtn').disabled=false}}
