@@ -44,7 +44,7 @@ button:active{transform:scale(.98)}
 footer{padding-top:7px;color:#8a83a6}
 @media(max-width:380px){.wrap{padding-left:11px;padding-right:11px}.panel{padding:15px}.hero{padding:22px 18px 27px}.item{padding:11px 9px}.item button{padding:9px 8px;font-size:12px}#content form.row{flex-wrap:wrap}#content form.row .primary{width:100%}}
 
-/* MaFiAnGo 16.10e — widok rodzinny */
+/* MaFiAnGo 16.10f — sprawy rodziny */
 .tabs button[hidden]{display:none!important}
 :root{--purple:#7456ed;--ink:#25294d}
 .wrap{max-width:840px;padding:12px 14px 110px}
@@ -91,7 +91,7 @@ footer{padding-top:7px;color:#8a83a6}
 #content .form-local button{width:100%;margin-top:8px}
 .item .smallbtn{padding:8px 10px}
 @media(min-width:600px){.tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.hero-avatar{width:92px;height:92px}#familyAvatars{max-width:600px;margin:18px auto 8px}}
-</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" class="dad-only"><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10e</footer></div><script>
+</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10f</footer></div><script>
 'use strict';
 const URL='https://wphgyimjbnlnzhwpakmw.supabase.co';
 const KEY='sb_publishable_zU7T-Y1klhyUpaRywWhLGg__uc_x1NG';
@@ -170,7 +170,7 @@ function status(s,isError=false){el('status').textContent=s;el('status').classNa
 function nameOf(id){return members.find(x=>x.user_id===id||x.id===id)?.name||'Domownik'}
 function memberId(key){const n=accounts[key].name.toLowerCase();return members.find(m=>String(m.name).toLowerCase()===n)?.id||null}
 async function login(){el('loginError').textContent='';if(!client){el('loginError').textContent='Nie udało się uruchomić aplikacji.';return;}const key=el('profile').value;const password=el('password').value;if(!password){el('loginError').textContent='Wpisz hasło.';return}el('loginBtn').disabled=true;try{const {data,error}=await client.auth.signInWithPassword({email:accounts[key].email,password});if(error)throw error;el('password').value='';await start(data.user)}catch(e){el('loginError').textContent='Nie udało się zalogować: '+err(e)}finally{el('loginBtn').disabled=false}}
-async function start(user){current=Object.keys(accounts).find(k=>accounts[k].email.toLowerCase()===String(user.email).toLowerCase());if(!current){await client.auth.signOut();throw Error('To konto nie należy do skonfigurowanych profili MaFiAnGo.')}el('login').classList.add('hide');el('app').classList.remove('hide');el('hello').textContent='Cześć, '+accounts[current].name+'! 👋';el('who').textContent=current==='tata'?'Panel rodzica':'Panel domownika';el('accountName').textContent='Zalogowano: '+accounts[current].name;await load()}
+async function start(user){current=Object.keys(accounts).find(k=>accounts[k].email.toLowerCase()===String(user.email).toLowerCase());if(!current){await client.auth.signOut();throw Error('To konto nie należy do skonfigurowanych profili MaFiAnGo.')}el('login').classList.add('hide');el('app').classList.remove('hide');el('hello').textContent='Cześć, '+(current==='tata'?'Grzegorz':accounts[current].name)+'! 👋';el('who').textContent=current==='tata'?'Panel rodzica':'Panel domownika';el('accountName').textContent='Zalogowano: '+accounts[current].name;await load()}
 async function load(){status('Pobieranie danych…');try{const {data:userData,error:userError}=await client.auth.getUser();if(userError)throw userError;const uid=userData.user?.id;if(!uid)throw Error('Sesja wygasła. Zaloguj się ponownie.');let r=await client.from('family_members').select('id,family_id,name,user_id,role').eq('user_id',uid).limit(1);if(r.error)throw r.error;familyId=r.data?.[0]?.family_id;if(!familyId){const own=await client.from('families').select('id').eq('owner_id',uid).limit(1);if(own.error)throw own.error;familyId=own.data?.[0]?.id}if(!familyId)throw Error('Nie znaleziono rodziny powiązanej z tym kontem. W Supabase trzeba powiązać użytkownika z rodziną.');const [m,s,t]=await Promise.all([client.from('family_members').select('id,family_id,name,user_id,role').eq('family_id',familyId),client.from('shopping_items').select('id,text,done,created_by,created_at').eq('family_id',familyId).order('created_at',{ascending:false}),client.from('tasks').select('id,text,done,assigned_to,created_at').eq('family_id',familyId).order('created_at',{ascending:false})]);for(const r of [m,s,t])if(r.error)throw r.error;members=m.data||[];shopping=s.data||[];tasks=t.data||[];status('✓ Połączono z Supabase • '+new Date().toLocaleTimeString('pl-PL'));render()}catch(e){status('Błąd synchronizacji: '+err(e),true);render()}}
 async function mutation(query){if(busy)return;busy=true;status('Zapisywanie…');try{const {error}=await query;if(error)throw error;await load()}catch(e){status('Nie zapisano zmiany: '+err(e),true)}finally{busy=false}}
 function render(){document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));const isDad=current==='tata';if(!familyId){el('content').innerHTML='<h2>Połączenie z rodziną</h2><p class="muted">Najpierw trzeba poprawnie powiązać konto z rodziną w Supabase.</p>';return}if(tab==='zakupy'){el('content').innerHTML='<h2>🛒 Lista zakupów</h2><form id="addShopping" class="row"><input id="newShopping" maxlength="120" required placeholder="Co trzeba kupić?"><button class="primary">Dodaj</button></form><div id="items">'+(shopping.map(x=>'<div class="item"><span class="label">'+esc(x.text)+'</span><button class="secondary" data-buy="'+esc(x.id)+'">✓ Kupione</button></div>').join('')||'<p class="muted">Lista jest pusta.</p>')+'</div>';el('addShopping').onsubmit=e=>{e.preventDefault();const text=el('newShopping').value.trim();if(text)mutation(client.from('shopping_items').insert({family_id:familyId,text,done:false,created_by:session?.user?.id||null}))};document.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>mutation(client.from('shopping_items').delete().eq('id',b.dataset.buy).eq('family_id',familyId)));return}const visible=isDad?tasks:tasks.filter(x=>x.assigned_to===memberId(current));const options=members.filter(m=>m.name&&String(m.name).toLowerCase()!=='tata'&&m.id).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+'</option>').join('');el('content').innerHTML='<h2>✅ Zadania domowe</h2>'+(isDad?'<form id="addTask"><input id="newTask" maxlength="120" required placeholder="Jakie zadanie?"><select id="assigned">'+options+'</select><button class="primary" '+(!options?'disabled':'')+'>Dodaj zadanie</button></form>':'<p class="muted">Zadania przydziela i zatwierdza Tata.</p>')+(visible.map(x=>'<div class="item"><span class="label" style="'+(x.done?'text-decoration:line-through;opacity:.6':'')+'">'+esc(x.text)+'<div class="muted">'+esc(nameOf(x.assigned_to))+'</div></span>'+(isDad?'<button class="secondary" data-done="'+esc(x.id)+'" data-state="'+(x.done?'1':'0')+'">'+(x.done?'↩':'✓')+'</button><button class="secondary" data-del="'+esc(x.id)+'">×</button>':'')+'</div>').join('')||'<p class="muted">Brak zadań.</p>');if(isDad){el('addTask').onsubmit=e=>{e.preventDefault();const text=el('newTask').value.trim(),assigned_to=el('assigned').value;if(text&&assigned_to)mutation(client.from('tasks').insert({family_id:familyId,text,assigned_to,done:false}))};document.querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>mutation(client.from('tasks').update({done:b.dataset.state!=='1'}).eq('id',b.dataset.done).eq('family_id',familyId)));document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>mutation(client.from('tasks').delete().eq('id',b.dataset.del).eq('family_id',familyId)))}}
@@ -209,13 +209,13 @@ function renderMatters(){
 render=function(){
  const dad=current==='tata';
  document.querySelectorAll('.dad-only').forEach(b=>b.hidden=!dad);
- if(!dad&&(tab==='budzet'||tab==='sprawy'))tab='zadania';
+ if(!dad&&tab==='budzet')tab='zadania';
  document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
  const hero=document.getElementById('heroAvatar');
  if(current&&avatarImages[current]){hero.src=avatarImages[current];hero.style.display='block'}else{hero.style.display='none'}
  if(!familyId){originalRender();return}
  if(dad&&tab==='budzet'){renderBudget();return}
- if(dad&&tab==='sprawy'){renderMatters();return}
+ if(tab==='sprawy'){renderFamilyMatters();return}
  originalRender();
  // Dołóż awatary przy istniejących zadaniach, nie zmieniając zapisu do bazy.
  if(tab==='zadania')document.querySelectorAll('#content .item').forEach(item=>{
@@ -226,5 +226,56 @@ render=function(){
 };
 // Dotychczasowe przyciski mają podpięte oryginalne funkcje.
 // Podmieniamy wyłącznie funkcję rysującą; wywołania render() użyją nowej wersji.
+
+
+// 16.10f: sprawy rodzinne przechowywane w Supabase; stary lokalny budżet bez zmian.
+let familyMatters=[],matterSyncError='';
+const previousLoad=load;
+load=async function(){
+ await previousLoad();
+ if(!familyId||!current)return;
+ try{
+  const r=await client.from('family_matters').select('id,family_id,member_id,text,done,due_at,remind_at,created_at').eq('family_id',familyId).order('created_at',{ascending:false});
+  if(r.error)throw r.error;
+  familyMatters=r.data||[];matterSyncError='';
+ }catch(e){matterSyncError=err(e);familyMatters=[]}
+ if(tab==='sprawy')render();
+};
+function dateForInput(iso){if(!iso)return '';const d=new Date(iso);const local=new Date(d.getTime()-d.getTimezoneOffset()*60000);return local.toISOString().slice(0,16)}
+function formatDue(iso){return iso?new Date(iso).toLocaleString('pl-PL',{dateStyle:'medium',timeStyle:'short'}):'Bez terminu'}
+function renderFamilyMatters(){
+ const own=memberId(current);
+ if(!own){el('content').innerHTML='<h2>🗒️ Moje sprawy</h2><p class="error">Nie znaleziono Twojego profilu w rodzinie.</p>';return}
+ const dad=current==='tata';
+ const visible=dad?familyMatters:familyMatters.filter(x=>x.member_id===own);
+ const groups=dad?[['tata','👑 Moje sprawy'],['marcel','🎮 Sprawy Marcela'],['filip','⚽ Sprawy Filipa'],['antek','🧸 Sprawy Antka']]:[[current,'🗒️ Moje sprawy']];
+ const legacy=dad?localRead(mattersKey):[];
+ el('content').innerHTML='<h2>🗒️ Moje sprawy</h2>'+
+ (matterSyncError?'<p class="error">Sprawy nie są jeszcze zsynchronizowane. W Supabase trzeba uruchomić dołączony plik SQL. '+esc(matterSyncError)+'</p>':'')+
+ '<form class="form-local" id="addFamilyMatter"><input id="matterText" maxlength="130" required placeholder="Co masz do załatwienia?">'+
+ '<label for="matterDue">Termin (opcjonalnie)</label><input type="datetime-local" id="matterDue">'+
+ '<label for="matterReminder">Przypomnij (opcjonalnie)</label><input type="datetime-local" id="matterReminder">'+
+ '<button class="primary" '+(matterSyncError?'disabled':'')+'>Dodaj sprawę</button></form>'+
+ groups.map(([key,title])=>{const mid=memberId(key);const arr=visible.filter(x=>x.member_id===mid);return '<h3>'+title+'</h3>'+
+ (arr.map(x=>'<div class="item"><button class="secondary smallbtn" data-fmatter-done="'+esc(x.id)+'" data-state="'+(x.done?'1':'0')+'" '+(!dad&&x.member_id!==own?'disabled':'')+'>'+(x.done?'☑':'☐')+'</button><span class="label" style="'+(x.done?'text-decoration:line-through;opacity:.55':'')+'">'+esc(x.text)+'<div class="muted">'+esc(formatDue(x.due_at))+'</div></span>'+(x.member_id===own?'<button class="secondary smallbtn" data-fmatter-delete="'+esc(x.id)+'">×</button>':'')+'</div>').join('')||'<p class="muted">Brak spraw.</p>')}).join('')+
+ (legacy.length?'<p class="info-note">Masz też '+legacy.length+' spraw zapisanych wcześniej lokalnie w 16.10e. Nie zostały automatycznie przeniesione do Supabase.</p>':'')+
+ '<p class="info-note">Sprawy synchronizują się po uruchomieniu konfiguracji SQL. Powiadomienia push przy zamkniętej aplikacji wymagają osobnego uruchomienia usługi wysyłającej.</p>';
+ el('addFamilyMatter').onsubmit=e=>{e.preventDefault();const text=el('matterText').value.trim(),due=el('matterDue').value,remind=el('matterReminder').value;if(!text)return;
+ const due_at=due?new Date(due).toISOString():null,remind_at=remind?new Date(remind).toISOString():null;
+ if(remind_at&&new Date(remind_at).getTime()<Date.now()){alert('Termin przypomnienia musi być w przyszłości.');return}
+ mutation(client.from('family_matters').insert({family_id:familyId,member_id:own,text,done:false,due_at,remind_at}));};
+ document.querySelectorAll('[data-fmatter-done]').forEach(b=>b.onclick=()=>mutation(client.from('family_matters').update({done:b.dataset.state!=='1'}).eq('id',b.dataset.fmatterDone).eq('family_id',familyId)));
+ document.querySelectorAll('[data-fmatter-delete]').forEach(b=>b.onclick=()=>mutation(client.from('family_matters').delete().eq('id',b.dataset.fmatterDelete).eq('family_id',familyId)));
+}
+// Umożliwiamy dziecku oznaczenie swojego zadania jako wykonane.
+// Operacja wymaga odpowiedniej polityki RLS dla tabeli tasks.
+const renderBeforeTaskUpdate=render;
+render=function(){renderBeforeTaskUpdate();if(tab!=='zadania'||current==='tata'||!familyId)return;
+ const visible=tasks.filter(x=>x.assigned_to===memberId(current));
+ const items=document.querySelectorAll('#content .item');
+ items.forEach((node,i)=>{const task=visible[i];if(!task)return;const button=document.createElement('button');button.className='secondary smallbtn';button.textContent=task.done?'☑ Wykonane':'☐ Zrobione';button.onclick=()=>mutation(client.from('tasks').update({done:!task.done}).eq('id',task.id).eq('family_id',familyId));node.appendChild(button)});
+};
+// Sprawdzanie aktualizacji po powrocie do aplikacji (nie zastępuje powiadomień push).
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current&&familyId&&!busy)load()});
 
 </script></body></html>
