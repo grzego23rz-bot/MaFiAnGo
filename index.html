@@ -44,7 +44,7 @@ button:active{transform:scale(.98)}
 footer{padding-top:7px;color:#8a83a6}
 @media(max-width:380px){.wrap{padding-left:11px;padding-right:11px}.panel{padding:15px}.hero{padding:22px 18px 27px}.item{padding:11px 9px}.item button{padding:9px 8px;font-size:12px}#content form.row{flex-wrap:wrap}#content form.row .primary{width:100%}}
 
-/* MaFiAnGo 16.10i — sprawy rodziny */
+/* MaFiAnGo 16.10j — sprawy rodziny */
 .tabs button[hidden]{display:none!important}
 :root{--purple:#7456ed;--ink:#25294d}
 .wrap{max-width:840px;padding:12px 14px 110px}
@@ -94,7 +94,7 @@ footer{padding-top:7px;color:#8a83a6}
 /* MaFiAnGo 16.10i — przygotowanie powiadomień */
 .push-setup{margin-top:12px;padding:12px 15px;background:#fff;border:1px solid #e9e5fc;border-radius:18px;text-align:center}
 .push-setup #enablePush{width:100%}.push-setup #pushInfo{margin:8px 0 0;font-size:12px}
-</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section id="pushSetup" class="push-setup"><button id="enablePush" class="secondary" type="button">🔔 Włącz powiadomienia</button><p id="pushInfo" class="muted" role="status">Powiadomienia są na razie przygotowywane.</p></section><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10i</footer></div><script>
+</style></head><body><div class="wrap"><header class="hero"><div class="hero-actions"><strong>🏡 MaFiAnGo</strong><div id="heroLogout"></div></div><div class="hero-inner"><img class="hero-avatar" id="heroAvatar" alt="Awatar"><div><h1 id="hello">Rodzinna ekipa 👋</h1><span id="who" class="tag">Wspólne zakupy i zadania</span></div></div></header><section class="panel" id="login"><h2>🔐 Wybierz swój profil</h2><label for="profile">Kto korzysta z aplikacji?</label><select id="profile"><option value="tata">👑 Tata</option><option value="marcel">🎮 Marcel</option><option value="filip">⚽ Filip</option><option value="antek">🦸 Antek</option></select><label for="password">Hasło do swojego konta</label><input id="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło"><button class="primary" id="loginBtn">Zaloguj się</button><p class="muted">Każdy loguje się na swoje konto Supabase. Hasło pozostaje na Twoim telefonie.</p><p class="error" id="loginError" role="alert"></p></section><section id="app" class="hide"><div id="familyAvatars"></div><section id="pushSetup" class="push-setup"><button id="enablePush" class="secondary" type="button">🔔 Włącz powiadomienia</button><p id="pushInfo" class="muted" role="status">Powiadomienia są na razie przygotowywane.</p></section><section class="system-panel"><strong id="accountName" hidden></strong><p id="status" class="muted" role="status">Łączenie z bazą…</p><button id="refresh" hidden>Odśwież dane</button><button class="secondary" id="logout">Wyloguj</button></section><div class="tabs"><button data-tab="zakupy" class="active"><span class="tab-icon">🛒</span>Zakupy</button><button data-tab="zadania"><span class="tab-icon">✅</span>Zadania</button><button data-tab="budzet" class="dad-only"><span class="tab-icon">🪙</span>Budżet</button><button data-tab="sprawy" ><span class="tab-icon">🗒️</span>Moje sprawy</button></div><section class="panel" id="content"></section></section><footer>MaFiAnGo • REST • styl rodzinny 16.10j</footer></div><script>
 'use strict';
 const URL='https://wphgyimjbnlnzhwpakmw.supabase.co';
 const KEY='sb_publishable_zU7T-Y1klhyUpaRywWhLGg__uc_x1NG';
@@ -282,6 +282,66 @@ render=function(){renderBeforeTaskUpdate();if(tab!=='zadania'||current==='tata'|
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current&&familyId&&!busy)load()});
 
 </script><script>
+
+/* MaFiAnGo 16.10j — ręczne wysłanie powiadomienia o zadaniu.
+   Funkcja serwerowa sama weryfikuje zalogowanego Tatę i rodzinę zadania. */
+(function(){
+  const previousRender=render;
+  let sending=false;
+  async function sendTaskPush(taskId,button){
+    if(sending)return;
+    sending=true;
+    button.disabled=true;
+    const oldLabel=button.textContent;
+    button.textContent='⏳ Wysyłanie…';
+    try{
+      if(current!=='tata')throw Error('Tylko Tata może wysyłać powiadomienia.');
+      const task=tasks.find(t=>String(t.id)===String(taskId));
+      if(!task)throw Error('Nie znaleziono zadania.');
+      const token=await accessToken();
+      if(!token)throw Error('Zaloguj się ponownie.');
+      const response=await fetch(URL+'/functions/v1/send-push',{
+        method:'POST',
+        headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body:JSON.stringify({taskId:task.id})
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw Error(data.error||data.message||'Błąd HTTP '+response.status);
+      if(!data.success)throw Error('Serwer nie potwierdził wysyłki.');
+      const count=Number(data.sent)||0;
+      if(count===0)throw Error('Nie wysłano powiadomienia. Sprawdź, czy odbiorca połączył swój telefon.');
+      status('🔔 Wysłano powiadomienie na '+count+' urządzenie'+(count===1?'':'/a')+'.');
+      alert('🔔 Powiadomienie wysłane! Urządzenia: '+count);
+    }catch(e){
+      status('Błąd powiadomienia: '+err(e),true);
+      alert('Nie udało się wysłać powiadomienia:\n'+err(e));
+    }finally{
+      sending=false;
+      if(button.isConnected){button.disabled=false;button.textContent=oldLabel}
+    }
+  }
+  render=function(){
+    previousRender();
+    if(current!=='tata'||tab!=='zadania'||!familyId)return;
+    document.querySelectorAll('#content [data-done]').forEach(doneButton=>{
+      const id=doneButton.dataset.done;
+      const task=tasks.find(t=>String(t.id)===String(id));
+      if(!task)return;
+      const row=doneButton.closest('.item');
+      if(!row||row.querySelector('[data-send-push]'))return;
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='secondary smallbtn';
+      button.textContent='🔔';
+      button.title='Wyślij powiadomienie do '+nameOf(task.assigned_to);
+      button.setAttribute('aria-label',button.title);
+      button.dataset.sendPush=id;
+      button.onclick=()=>sendTaskPush(id,button);
+      row.insertBefore(button,doneButton);
+    });
+  };
+})();
+
 /* MaFiAnGo 16.10i — subskrypcja Web Push na urządzeniu.
    Wymaga endpointu GET send-push zwracającego {publicKey:...}.
    Subskrypcje zapisuje do public.push_subscriptions zgodnie z RLS. */
